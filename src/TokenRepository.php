@@ -3,7 +3,7 @@
 namespace Laravel\Passport;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model;
 
 class TokenRepository
 {
@@ -26,7 +26,7 @@ class TokenRepository
      */
     public function find($id)
     {
-        return Token::find($id);
+        return Token::where('id', $id)->first();
     }
 
     /**

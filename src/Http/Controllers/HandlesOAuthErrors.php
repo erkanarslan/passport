@@ -27,14 +27,6 @@ trait HandlesOAuthErrors
             $this->exceptionHandler()->report($e);
 
             return $e->generateHttpResponse(new Psr7Response);
-        } catch (Exception $e) {
-            $this->exceptionHandler()->report($e);
-
-            return new Response($e->getMessage(), 500);
-        } catch (Throwable $e) {
-            $this->exceptionHandler()->report(new FatalThrowableError($e));
-
-            return new Response($e->getMessage(), 500);
         }
     }
 
