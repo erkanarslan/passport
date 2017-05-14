@@ -21,13 +21,8 @@ trait HandlesOAuthErrors
      */
     protected function withErrorHandling($callback)
     {
-        try {
-            return $callback();
-        } catch (OAuthServerException $e) {
-            $this->exceptionHandler()->report($e);
-
-            return $e->generateHttpResponse(new Psr7Response);
-        }
+		// Removed catch block so that the actual app will handle errors
+        return $callback();
     }
 
     /**
