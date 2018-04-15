@@ -5,6 +5,7 @@ namespace Laravel\Passport\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Passport\ClientRepository;
+use Jenssegers\Mongodb\Eloquent\Model;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class ClientController
