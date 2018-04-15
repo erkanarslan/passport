@@ -13,7 +13,7 @@ class Passport
     /**
      * Indicates if the implicit grant type is enabled.
      *
-     * @var boolean|null
+     * @var bool|null
      */
     public static $implicitGrantEnabled = false;
 
@@ -229,9 +229,9 @@ class Passport
             return static::$tokensExpireAt
                             ? Carbon::now()->diff(static::$tokensExpireAt)
                             : new DateInterval('P1Y');
-        } else {
-            static::$tokensExpireAt = $date;
         }
+
+        static::$tokensExpireAt = $date;
 
         return new static;
     }
@@ -248,9 +248,9 @@ class Passport
             return static::$refreshTokensExpireAt
                             ? Carbon::now()->diff(static::$refreshTokensExpireAt)
                             : new DateInterval('P1Y');
-        } else {
-            static::$refreshTokensExpireAt = $date;
         }
+
+        static::$refreshTokensExpireAt = $date;
 
         return new static;
     }
@@ -265,9 +265,9 @@ class Passport
     {
         if (is_null($cookie)) {
             return static::$cookie;
-        } else {
-            static::$cookie = $cookie;
         }
+
+        static::$cookie = $cookie;
 
         return new static;
     }
@@ -278,7 +278,7 @@ class Passport
      * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
      * @param  array  $scopes
      * @param  string  $guard
-     * @return void
+     * @return \Illuminate\Contracts\Auth\Authenticatable
      */
     public static function actingAs($user, $scopes = [], $guard = 'api')
     {
@@ -293,6 +293,8 @@ class Passport
         app('auth')->guard($guard)->setUser($user);
 
         app('auth')->shouldUse($guard);
+
+        return $user;
     }
 
     /**
@@ -314,10 +316,10 @@ class Passport
      */
     public static function keyPath($file)
     {
-        $file = ltrim($file, "/\\");
+        $file = ltrim($file, '/\\');
 
         return static::$keyPath
-            ? rtrim(static::$keyPath, "/\\").DIRECTORY_SEPARATOR.$file
+            ? rtrim(static::$keyPath, '/\\').DIRECTORY_SEPARATOR.$file
             : storage_path($file);
     }
 

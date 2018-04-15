@@ -2,9 +2,7 @@
 
 namespace Laravel\Passport\Console;
 
-use DateTime;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\PersonalAccessClient;
 
@@ -62,10 +60,6 @@ class ClientCommand extends Command
         $client = $clients->createPersonalAccessClient(
             null, $name, 'http://localhost'
         );
-
-        $accessClient = new PersonalAccessClient();
-        $accessClient->client_id = $client->id;
-        $accessClient->save();
 
         $this->info('Personal access client created successfully.');
         $this->line('<comment>Client ID:</comment> '.$client->id);

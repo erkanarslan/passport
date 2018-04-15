@@ -3,10 +3,11 @@
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\TestCase;
 use Illuminate\Container\Container;
 use Laravel\Passport\Guards\TokenGuard;
 
-class TokenGuardTest extends PHPUnit_Framework_TestCase
+class TokenGuardTest extends TestCase
 {
     public function tearDown()
     {
@@ -58,10 +59,13 @@ class TokenGuardTest extends PHPUnit_Framework_TestCase
         $request = Request::create('/');
         $request->headers->set('Authorization', 'Bearer token');
 
-        $resourceServer->shouldReceive('validateAuthenticatedRequest')->andReturnUsing(function () {
-            throw new League\OAuth2\Server\Exception\OAuthServerException('message', 500, 'error type');
-        });
+        $resourceServer->shouldReceive('validateAuthenticatedRequest')->andThrow(
+            new League\OAuth2\Server\Exception\OAuthServerException('message', 500, 'error type')
+        );
 
+        $this->assertNull($guard->user($request));
+
+        // Assert that `validateAuthenticatedRequest` isn't called twice on failure.
         $this->assertNull($guard->user($request));
     }
 

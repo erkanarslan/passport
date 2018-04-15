@@ -4,7 +4,6 @@ namespace Laravel\Passport\Guards;
 
 use Exception;
 use Firebase\JWT\JWT;
-use Laravel\Passport\Token;
 use Illuminate\Http\Request;
 use Laravel\Passport\Passport;
 use Illuminate\Container\Container;
@@ -23,46 +22,46 @@ class TokenGuard
     /**
      * The resource server instance.
      *
-     * @var ResourceServer
+     * @var \League\OAuth2\Server\ResourceServer
      */
     protected $server;
 
     /**
      * The user provider implementation.
      *
-     * @var UserProvider
+     * @var \Illuminate\Contracts\Auth\UserProvider
      */
     protected $provider;
 
     /**
      * The token repository instance.
      *
-     * @var TokenRepository
+     * @var \Laravel\Passport\TokenRepository
      */
     protected $tokens;
 
     /**
      * The client repository instance.
      *
-     * @var ClientRepository
+     * @var \Laravel\Passport\ClientRepository
      */
     protected $clients;
 
     /**
      * The encrypter implementation.
      *
-     * @var Encrypter
+     * @var \Illuminate\Contracts\Encryption\Encrypter
      */
     protected $encrypter;
 
     /**
      * Create a new token guard instance.
      *
-     * @param  ResourceServer  $server
-     * @param  UserProvider  $provider
-     * @param  TokenRepository  $tokens
-     * @param  ClientRepository  $clients
-     * @param  Encrypter  $encrypter
+     * @param  \League\OAuth2\Server\ResourceServer  $server
+     * @param  \Illuminate\Contracts\Auth\UserProvider  $provider
+     * @param  \Laravel\Passport\TokenRepository  $tokens
+     * @param  \Laravel\Passport\ClientRepository  $clients
+     * @param  \Illuminate\Contracts\Encryption\Encrypter  $encrypter
      * @return void
      */
     public function __construct(ResourceServer $server,
@@ -81,7 +80,7 @@ class TokenGuard
     /**
      * Get the user for the incoming request.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
     public function user(Request $request)
@@ -96,7 +95,7 @@ class TokenGuard
     /**
      * Authenticate the incoming request via the Bearer token.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
     protected function authenticateViaBearerToken($request)
@@ -138,7 +137,9 @@ class TokenGuard
 
             return $token ? $user->withAccessToken($token) : null;
         } catch (OAuthServerException $e) {
-            return Container::getInstance()->make(
+            $request->headers->set( 'Authorization', '', true );
+
+            Container::getInstance()->make(
                 ExceptionHandler::class
             )->report($e);
         }
@@ -147,7 +148,7 @@ class TokenGuard
     /**
      * Authenticate the incoming request via the token cookie.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
     protected function authenticateViaCookie($request)
@@ -180,7 +181,7 @@ class TokenGuard
     /**
      * Decode and decrypt the JWT token cookie.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     protected function decodeJwtTokenCookie($request)
@@ -195,7 +196,7 @@ class TokenGuard
      * Determine if the CSRF / header are valid and match.
      *
      * @param  array  $token
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
     protected function validCsrf($token, $request)

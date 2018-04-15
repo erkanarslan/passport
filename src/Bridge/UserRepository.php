@@ -3,6 +3,7 @@
 namespace Laravel\Passport\Bridge;
 
 use RuntimeException;
+use Illuminate\Hashing\HashManager;
 use Illuminate\Contracts\Hashing\Hasher;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
@@ -12,19 +13,19 @@ class UserRepository implements UserRepositoryInterface
     /**
      * The hasher implementation.
      *
-     * @var \Illuminate\Contracts\Hashing\Hasher
+     * @var \Illuminate\Hashing\HashManager
      */
     protected $hasher;
 
     /**
      * Create a new repository instance.
      *
-     * @param  \Illuminate\Contracts\Hashing\Hasher  $hasher
+     * @param  \Illuminate\Hashing\HashManager  $hasher
      * @return void
      */
-    public function __construct(Hasher $hasher)
+    public function __construct(HashManager $hasher)
     {
-        $this->hasher = $hasher;
+        $this->hasher = $hasher->driver();
     }
 
     /**
@@ -44,8 +45,7 @@ class UserRepository implements UserRepositoryInterface
             $user = (new $model)->where('email', $username)->first();
         }
 
-
-        if (! $user ) {
+        if (! $user) {
             return;
         } elseif (method_exists($user, 'validateForPassportPasswordGrant')) {
             if (! $user->validateForPassportPasswordGrant($password)) {
