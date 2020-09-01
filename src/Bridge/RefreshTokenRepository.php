@@ -85,15 +85,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function isRefreshTokenRevoked($tokenId)
     {
-        $refreshToken = $this->database->table('oauth_refresh_tokens')
-                    ->where('id', $tokenId)->first();
-
-        if ($refreshToken === null || $refreshToken->revoked) {
-            return true;
-        }
-
-        return $this->tokens->isAccessTokenRevoked(
-            $refreshToken->access_token_id
-        );
+        return $this->database->table('oauth_refresh_tokens')
+            ->where('id', $tokenId)->where('revoked', true)->exists();
     }
 }
