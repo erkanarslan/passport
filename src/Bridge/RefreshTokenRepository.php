@@ -7,6 +7,7 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Laravel\Passport\Events\RefreshTokenCreated;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
+use MongoDB\BSON\UTCDateTime;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
@@ -65,7 +66,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             'id' => $id = $refreshTokenEntity->getIdentifier(),
             'access_token_id' => $accessTokenId = $refreshTokenEntity->getAccessToken()->getIdentifier(),
             'revoked' => false,
-            'expires_at' => $refreshTokenEntity->getExpiryDateTime(),
+            'expires_at' => new UTCDateTime($refreshTokenEntity->getExpiryDateTime()),
         ]);
 
         $this->events->fire(new RefreshTokenCreated($id, $accessTokenId));
